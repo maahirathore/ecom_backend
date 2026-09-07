@@ -1,0 +1,51 @@
+
+import  Mongoose  from "mongoose"
+const productSchema=new Mongoose.Schema({
+    productName:{
+type:String,
+required:true
+    },
+    price:{
+type:Number,
+required:true
+    },
+    salesPrice:{
+required:true,
+type:Number
+    },
+    description:{
+required:true,
+type:String
+    },
+    image:{
+required:true,
+type:[String]
+    },
+    category:{
+        type:Mongoose.Schema.Types.ObjectId,
+        ref:"Category",
+        required:true
+    },
+    subCategory:{
+      type:Mongoose.Schema.Types.ObjectId,
+        ref:"SubCategory",
+        required:true   
+    },
+    stock:{
+        type:Number,
+        required:true
+    },
+    createdAt:{
+type:Date,
+default:Date.now
+    },
+    updatedAt:{
+type:Date,
+default:Date.now
+    },
+    createdBy:{
+        type:Mongoose.Schema.Types.ObjectId,
+        required:true
+    }
+})
+export default Mongoose.model("Product",productSchema)

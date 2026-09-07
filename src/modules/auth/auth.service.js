@@ -1,8 +1,8 @@
 import UserRepo from "../../repository/auth.repo.js";
 import * as error from "../../shared/error/globalError.js";
 import * as token from "../../utils/generateToken.js";
-// import tempMail from "../../utils/generateMail.js";
-// import sendEmail from "../../config/nodemailer.js";
+//import tempMail from "../../utils/generateMail.js";
+//import sendEmail from "../../config/nodemailer.js";
 import jwt from "jsonwebtoken";
 import env from "../../config/env.js";
 import bcrypt from "bcrypt";
@@ -12,8 +12,8 @@ export default class AuthService {
   }
   // THIS IS THE REGISTRATION LOGIC
   async createUserService(data) {
-    let { name, email, password, mobile } = data;
-    if (!name || !email || !password || !mobile)
+    let { name, email, password, mobile,role } = data;
+    if (!name || !email || !password || !mobile||!role)
       throw new error.NOTFOUNDERROR("all fields are required");
 
     const isExisted = await this.authService.findByEmail(email);

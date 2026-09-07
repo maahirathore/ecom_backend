@@ -37,6 +37,9 @@ const userSchema = new Schema({
   refreshToken: {
     type: String,
   },
+  role:{type: String,
+    enum:["admin", "seller","user"],default: "user",required:true
+  }
 });
 
 userSchema.pre("save", function () {

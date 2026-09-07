@@ -2,11 +2,13 @@ import createApp from "./src/app.js";
 import connectDB from "./src/database/db.js";
 import logger from "./src/config/logger.js";
 import env from "./src/config/env.js";
+import dotenv from "dotenv"
+dotenv.config();
 (function startServer() {
   connectDB()
     .then(() => {
-      createApp().listen(3000, () => {
-        logger.info({ port: env.PORT }, "your app is running");
+      createApp().listen(process.env.PORT, () => {
+        logger.info({ port:process.env.PORT }, "your app is running");
       });
     })
     .catch((error) => {
