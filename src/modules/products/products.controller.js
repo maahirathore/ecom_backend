@@ -132,4 +132,25 @@ res.status(200).json({
           })  
         }
     }
-export default {sellerIdProduct, updateProductById,createProduct,getAllProduct,getProductByCategoryId,getProductByName}
+    const filterProduct=async(req,res)=>{
+      try {
+        const data=req.query
+        const filteredData=await productsService.filterProduct(data)
+      if (!filteredData) {
+        res.status(500).json({
+         success:false,
+         message:"data not available" 
+        })
+      } else {
+       res.status(200).json({
+success:true,
+message:"data fetched",
+filterData:filteredData,
+count:filteredData.length
+       }) 
+      }  
+      } catch (error) {
+      throw new Error(error.message)  
+      }
+    }
+export default {sellerIdProduct, updateProductById,createProduct,getAllProduct,getProductByCategoryId,getProductByName,filterProduct}

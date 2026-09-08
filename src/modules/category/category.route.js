@@ -27,4 +27,8 @@ const upload = multer({
 });
 categoryRouter.post("/createCategory",upload.single("image"),categoryController.createCategory)
 categoryRouter.get("/searchCategoryByName",categoryController.searchCategoryByName)
+categoryRouter.get("/getAllCategory", categoryController.getAllCategory)
+// getCategoryById
+categoryRouter.get("/getCategoryById/:id",categoryController.getCategoryById)
+
 export default categoryRouter

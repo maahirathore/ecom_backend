@@ -51,4 +51,45 @@ count:categoryData.length
     })
   }
 }
-export default { createCategory , searchCategoryByName};
+const getAllCategory=async(req,res)=>{
+try {
+  const getAll=await categoryService.getAllCategory()
+ if (!getAll) {
+ res.status(500).send({
+      success:false,
+      message:"can't fetch"
+    }) 
+ } else {
+  res.status(200).send({
+success:true,
+message:"done fetching",
+getAllData:getAll,
+count:getAll.length
+    })
+ } 
+} catch (error) {
+ throw new Error(error.message) 
+}
+}
+const getCategoryById=async(req,res)=>{
+try {
+  const categoryId=req.params.id
+  const getCategory= await categoryService.getCategoryById(categoryId)
+  if(!getCategory) {
+   res.status(500).send({
+      success:false,
+      message:"can't fetch"
+    })   
+  } else {
+    res.status(200).send({
+success:true,
+message:"done fetching",
+getData:getCategory,
+count:getCategory.length
+    }) 
+  }
+} catch (error) {
+throw new Error(error.message)  
+}
+}
+export default { createCategory , searchCategoryByName, getAllCategory,getCategoryById};

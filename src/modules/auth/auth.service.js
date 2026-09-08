@@ -108,4 +108,36 @@ export default class AuthService {
 
   //     return update;
   //   }
+
+  // all user, user by id, user by name
+   async getAllUser() {
+  try {
+const user = await this.authService.find();
+if (!user) throw new error("User not found");
+ return user
+  } catch (error) {
+   throw new Error(error.message) 
+  }
+  }
+  
+   async getUserById(id) {
+  try {
+const user = await this.authService.find({userId:id});
+if (!user) throw new error("User not found");
+ return user
+  } catch (error) {
+   throw new Error(error.message) 
+  }
+  }
+
+   async getUserByName(name) {
+  try {
+const user = await this.authService.find({userName:name});
+if (!user) throw new error("User not found");
+ return user
+  } catch (error) {
+   throw new Error(error.message) 
+  }
+  }
+
 }

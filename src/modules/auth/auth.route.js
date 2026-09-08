@@ -48,5 +48,7 @@ authRoutes.post(
   "/update-password/:id",
   authController.updatePasswordController.bind(authController),
 );
-
+authRoutes.get("/getAllUser",authController.getAllUser.bind(authController))
+authRoutes.get("/getUserById/:id",authController.getUserById.bind(authController))
+authRoutes.get("/getUserByName",authController.getUserByName.bind(authController))
 export default authRoutes;

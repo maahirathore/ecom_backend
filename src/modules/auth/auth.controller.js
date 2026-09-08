@@ -82,4 +82,62 @@ export default class AuthController {
       user: user.update,
     });
   }
+  async getAllUser(req, res) {
+    try {
+      const user = await this.authController.getAllUser();
+      if(!user){
+res.status(500).json({
+  message:"user not found"
+})
+      }else{
+          res
+      .status(201)
+      .json({ message: "User fetched successfully", user:user }); 
+      }
+  
+    } catch (error) {
+      throw new Error(error.message)
+    }
+   
+  }
+
+   async getUserById(req, res) {
+    try {
+      const userId=req.params.id
+      const user = await this.authController.getUserById(userId);
+      if(!user){
+res.status(500).json({
+  message:"user not found"
+})
+      }else{
+          res
+      .status(201)
+      .json({ message: "User fetched successfully", user:user }); 
+      }
+  
+    } catch (error) {
+      throw new Error(error.message)
+    }
+   
+  }
+
+   async getUserByName(req, res) {
+    const userName=req.query.name
+    try {
+      const user = await this.authController.getUserByName(userName);
+      if(!user){
+res.status(500).json({
+  message:"user not found"
+})
+      }else{
+          res
+      .status(201)
+      .json({ message: "User fetched successfully", user:user }); 
+      }
+  
+    } catch (error) {
+      throw new Error(error.message)
+    }
+   
+  }
 }

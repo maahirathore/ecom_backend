@@ -17,4 +17,29 @@ if (!subCategoryName||!description||!category) {
       throw new Error(error.message)  
     }
 }
-export default {subCategoryCreate}
+const getAllSubCategory=async()=>{
+  const getAllData=await subCategoryModel.find()
+  try {
+   if (!getAllData) {
+    throw new Error("Sub CAtegory Data not fetched")
+   } else {
+    return getAllData
+   } 
+  } catch (error) {
+    throw new Error(error.message)
+  }
+}
+const subCategoryById=async(id)=>{
+  const subCategoryId=id
+  const getData=await subCategoryModel.find({subCategoryId:subCategoryId})
+  try {
+   if (!getData) {
+    throw new Error("Sub CAtegory Data not fetched")
+   } else {
+    return getData
+   }   
+  } catch (error) {
+    throw new Error(error.message) 
+  }
+}
+export default {subCategoryCreate, getAllSubCategory, subCategoryById}

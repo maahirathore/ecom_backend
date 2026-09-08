@@ -16,6 +16,7 @@ productRouter.get("/getProductByCategoryId/:id",productsController.getProductByC
 productRouter.get("/productByName",productsController.getProductByName)
 productRouter.patch("/updateProductById/:id",productsController.updateProductById)
 productRouter.get("/searchProductBySellerId/:id",productsController.sellerIdProduct)
+productRouter.get("/filterProduct",productsController.filterProduct)
 // update
 // add to cart
 //  add to wishlist
