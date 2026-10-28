@@ -1,6 +1,7 @@
 import categoryController from "./category.controller.js"
 import express, { Router } from "express";
 import multer from "multer";
+import ifUserLogin from "../../middlewares/userValidation.mid.js";
 const categoryRouter=Router()
 const imageStorage = multer.diskStorage({
   destination: (req, file, cd) => cd(null, "uploads/categoryImages"),
@@ -25,7 +26,7 @@ const upload = multer({
     // fileFilter: imageFilter,
     limits: { fileSize: 2 * 1024 * 1024 } 
 });
-categoryRouter.post("/createCategory",upload.single("image"),categoryController.createCategory)
+categoryRouter.post("/createCategory",ifUserLogin,upload.single("image"),categoryController.createCategory)
 categoryRouter.get("/searchCategoryByName",categoryController.searchCategoryByName)
 categoryRouter.get("/getAllCategory", categoryController.getAllCategory)
 // getCategoryById

@@ -198,3 +198,5 @@ http://localhost:3000
 - Keep database queries inside repositories.
 - Add tests before publishing this as a reusable npm package.
 
+
+<!-- getAllWishlistProductByUserId, getWishlistProductByName, getAddToCartProductByUserId, getAddToCartProductByName, FilterProductOnWishlist, getAllSellers, getSellerById, getSellerByName -->

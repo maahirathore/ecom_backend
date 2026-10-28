@@ -1,6 +1,5 @@
-import { Schema, model } from "mongoose";
-import bcrypt from "bcrypt";
-const userSchema = new Schema({
+import mongoose from "mongoose";
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
   },
@@ -37,20 +36,25 @@ const userSchema = new Schema({
   refreshToken: {
     type: String,
   },
-  role:{type: String,
-    enum:["admin", "seller","user"],default: "user",required:true
-  }
+  role: {
+    type: String,
+    enum: ["admin", "seller", "user"],
+    default: "user",
+    required: true,
+  },
+  otp: {
+    type: Number,
+  },
 });
 
-userSchema.pre("save", function () {
-  if (!this.isModified("password")) return;
-  this.password = bcrypt.hashSync(this.password, 10);
-});
+// userSchema.pre("save", function () {
+//   if (!this.isModified("password")) return;
+//   this.password = bcrypt.hashSync(this.password, 10);
+// });
 
-userSchema.methods.comparePassword = function (password) {
-  if (!this.password) return false;
-  return bcrypt.compareSync(password, this.password);
-};
+// userSchema.methods.comparePassword = function (password) {
+//   if (!this.password) return false;
+//   return bcrypt.compareSync(password, this.password);
+// };
 
-const userModel = model("userModel", userSchema);
-export default userModel;
+export default mongoose.model("userModel", userSchema);

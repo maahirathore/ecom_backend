@@ -1,143 +1,100 @@
-import UserRepo from "../../repository/auth.repo.js";
-import * as error from "../../shared/error/globalError.js";
-import * as token from "../../utils/generateToken.js";
-//import tempMail from "../../utils/generateMail.js";
-//import sendEmail from "../../config/nodemailer.js";
+import authModel from "../../models/auth.model.js";
+import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
-import env from "../../config/env.js";
-import bcrypt from "bcrypt";
-export default class AuthService {
-  constructor() {
-    this.authService = new UserRepo();
-  }
-  // THIS IS THE REGISTRATION LOGIC
-  async createUserService(data) {
-    let { name, email, password, mobile,role } = data;
-    if (!name || !email || !password || !mobile||!role)
-      throw new error.NOTFOUNDERROR("all fields are required");
-
-    const isExisted = await this.authService.findByEmail(email);
-    if (isExisted) throw new error.ALLREADYEXIST("User is already existed");
-    const user = await this.authService.createUser(data);
-    const accessToken = token.generateAccessToken(user._id);
-    const refreshToken = token.generateRefreshToken(user._id);
-
-    user.refreshToken = refreshToken;
-    await user.save();
-
-    return { accessToken, refreshToken, user };
-  }
-
-  // THIS IS LOGIN LOGIC
-  async loginUserService(data) {
-    let { email, password } = data;
-
-    if (!email || !password)
-      throw new error.NOTFOUNDERROR("all fields are required");
-
-    const isExisted = await this.authService.findByEmail(email);
-    if (!isExisted) throw new error.NOTFOUNDERROR("user not found");
-
-    const compare = isExisted.comparePassword(password);
-
-    if (!compare) throw new error.UNAUTHORIZED("Wrong Credential");
-
-    const accessToken = token.generateAccessToken(isExisted._id);
-    const refreshToken = token.generateRefreshToken(isExisted._id);
-
-    isExisted.refreshToken = refreshToken;
-    await isExisted.save();
-
-    return { accessToken, refreshToken, isExisted };
-  }
-
-  async GoogleLoginService(data) {
-    let { displayName, emails } = data;
-    const email = data.emails[0].value;
-    const isExisted = await this.authService.findByEmail(email);
-    if (isExisted) throw new error.ALLREADYEXIST("User is already existed");
-
-    const user = await this.authService.createUser({
-      email: email,
-      name: data.displayName,
-      authProvider: data.provider,
+const createUser = async (data) => {
+  console.log("Service", data);
+  try {
+    const { name, email, avatar, password, mobile, role } = data;
+    if (!name || !email || !avatar || !password || !mobile || !role)
+      throw new Error("All fields are required.");
+    const createData = await authModel.create({
+      name,
+      email,
+      avatar,
+      password,
+      mobile,
+      role,
     });
-
-    const accessToken = token.generateAccessToken(user._id);
-    const refreshToken = token.generateRefreshToken(user._id);
-
-    user.refreshToken = refreshToken;
-    await user.save();
-
-    return { accessToken, refreshToken, user };
-  }
-
-  //   async forgotPasswordService(data) {
-  //     let { email } = data;
-  //     const isExisted = await this.authService.findByEmail(email);
-  //     if (!isExisted) throw new error.NOTFOUNDERROR("user not found");
-  //     const rawToken = token.generateRawToken(isExisted._id);
-
-  //     const link = `http://localhost:3000/api/user/reset-password/${rawToken}`;
-
-  //     const sendMail = tempMail(isExisted.name, link);
-
-  //     return await sendEmail(isExisted.email, "forgot password", sendMail);
-  //   }
-
-  //   async resetPasswordService(data) {
-  //     let { token } = data;
-  //     const decode = jwt.verify(token, env.RAWTOKEN);
-  //     if (!decode) throw new error.UNAUTHORIZED("user not found");
-  //     const user = await this.authService.findById(decode.id);
-
-  //     return user;
-  //   }
-
-  //   async updatePasswordService(_id, pass) {
-  //     let { id } = _id;
-  //     let { password } = pass;
-  //     console.log(id);
-  //     console.log(password);
-  //     const user = await this.authService.findById(id);
-  //     console.log(user);
-  //     if (!user) throw new error.NOTFOUNDERROR("user not found");
-  //     const hashPassword = await bcrypt.hash(password, 10);
-
-  //     const update = await this.authService.updatePassword(id, hashPassword);
-
-  //     return update;
-  //   }
-
-  // all user, user by id, user by name
-   async getAllUser() {
-  try {
-const user = await this.authService.find();
-if (!user) throw new error("User not found");
- return user
+    if (!createData) {
+      throw new Error("User not created.");
+    } else {
+      return createData;
+    }
   } catch (error) {
-   throw new Error(error.message) 
+    throw new Error(error.message);
   }
-  }
-  
-   async getUserById(id) {
+};
+const sendOtp = async (email) => {
   try {
-const user = await this.authService.find({userId:id});
-if (!user) throw new error("User not found");
- return user
-  } catch (error) {
-   throw new Error(error.message) 
-  }
-  }
+    console.log("email", email);
+    const senderEmail = process.env.SENDER_EMAIL;
+    const senderPass = process.env.SENDER_PASS;
+    const ifUserExist = await authModel.findOne({ email });
 
-   async getUserByName(name) {
-  try {
-const user = await this.authService.find({userName:name});
-if (!user) throw new error("User not found");
- return user
-  } catch (error) {
-   throw new Error(error.message) 
-  }
-  }
 
+    if (!ifUserExist) throw new Error("User not found.");
+    const transport = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: senderEmail,
+        pass: senderPass,
+      },
+    });
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    const otpSave = await authModel.findOneAndUpdate({email:email}, { otp: otp }, { new: true });
+    otpSave.save();
+    
+    const mailOption = {
+      from: senderEmail,
+      to: email,
+      subject: "For ecommerce",
+      text: `Otp is ${otp}`,
+    };
+    console.log("MAIL OPTION:", mailOption);
+    const sendEmail = await transport.sendMail(mailOption);
+    if (!sendEmail) throw new Error("Can't send otp");
+    else {
+      return otp;
+    }
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const verifyOtp = async (email, otp)=>{
+  try{ 
+    if(!email || !otp) throw new Error("Email and OTP are required.");
+
+    if(otp.length !== 6) throw new Error("Invalid OTP length please Enter 6 digit OTP");
+    const ifExist = await authModel.findOne({email:email});
+    if(!ifExist) throw new Error("User not found.");
+    const checkOTP = ifExist.otp; 
+    if(checkOTP !== Number(otp)) throw new Error("Invalid OTP");
+    return {ifExist,checkOTP};
+
+  }catch(err){
+    throw new Error(err.message);
+  }
 }
+
+
+
+const userLogin = async (email, password) => {
+  try {
+    if (!email || !password) throw new Error("Email and password are required.");
+    const ifUserExist = await authModel.findOne({ email });
+    if (!ifUserExist) throw new Error("User not found.");
+    const checkPassword = ifUserExist.password === password;
+    if (!checkPassword) throw new Error("Invalid password.");
+    const token = jwt.sign({ id: ifUserExist._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    ifUserExist.refreshToken = token;
+    await ifUserExist.save();
+    return {ifUserExist, token};
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+export default { createUser, sendOtp, verifyOtp, userLogin }; 

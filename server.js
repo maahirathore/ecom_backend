@@ -12,6 +12,6 @@ dotenv.config();
       });
     })
     .catch((error) => {
-      logger.error({ error: error }, "there is an error while connection");
+       console.log("ACTUAL CONNECTION ERROR2:", error)
     });
 })();
