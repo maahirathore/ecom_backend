@@ -22,9 +22,13 @@ app.use("/api/addToWishlist",addToWishlistRouter)
 app.use("/api/seller",sellerRouter)
 app.use("/api/category",categoryRouter)
 app.use("/api/subCategory",subCategoryRouter)
-app.use("/api/product",productRouter)
+app.use("/api/product", (req, res, next) => {
+  console.log("PRODUCT REQUEST:", req.method, req.originalUrl);
+  next();
+}, productRouter);
 app.get("/",(req,res)=>{res.send("Ecommerce platform - Server "+PORT)})
 
 app.use(errorHandler);
+console.log("Product router mounted");
 return app;
 }

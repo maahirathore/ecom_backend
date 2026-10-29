@@ -19,6 +19,13 @@ productRouter.get("/productByName",productsController.getProductByName)
 productRouter.patch("/updateProductById/:id",ifUserLogin,productsController.updateProductById)
 productRouter.get("/searchProductBySellerId/:id",productsController.sellerIdProduct)
 productRouter.get("/filterProduct",productsController.filterProduct)
+// productRouter.post("/createProductByReplication",(req, res, next) => {
+//     console.log("Replication route reached");
+//     next();
+//   }, productsController.createProductByReplication)
+// productRouter.get("/getProductByReplication", productsController.productGetByReplication)
+productRouter.post("/postProduct",productsController.createProducts)
+productRouter.get("/getProduct",productsController.getProducts)
 // update
 // add to cart
 // add to wishlist

@@ -2,37 +2,37 @@ import Mongoose from "mongoose";
 const productSchema = new Mongoose.Schema({
   productName: {
     type: String,
-    required: true,
+    
   },
   price: {
     type: Number,
-    required: true,
+    
   },
   salesPrice: {
-    required: true,
+   
     type: Number,
   },
   description: {
-    required: true,
+    
     type: String,
   },
   image: {
-    required: true,
+    
     type: [String],
   },
   category: {
     type: Mongoose.Schema.Types.ObjectId,
     ref: "Category",
-    required: true,
+    
   },
   subCategory: {
     type: Mongoose.Schema.Types.ObjectId,
     ref: "SubCategory",
-    required: true,
+    
   },
   stock: {
     type: Number,
-    required: true,
+    
   },
   createdAt: {
     type: Date,
@@ -44,7 +44,7 @@ const productSchema = new Mongoose.Schema({
   },
   createdBy: {
     type: String,
-    required: true,
+    
   },
 });
 export default Mongoose.model("Product", productSchema);

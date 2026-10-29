@@ -153,4 +153,99 @@ count:filteredData.length
       throw new Error(error.message)  
       }
     }
-export default {sellerIdProduct, updateProductById,createProduct,getAllProduct,getProductByCategoryId,getProductByName,filterProduct}
+
+//     const createProductByReplication=async(req,res)=>{
+//       try{
+// const data = req.body;
+// const createdProduct = await productsService.createProductByReplication(data);
+// if (!createdProduct) {
+//   res.status(500).json({
+//     success: false,
+//     message: "Product creation failed",
+//   });
+// } else {
+//   res.status(201).json({
+//     success: true,
+//     message: "Product created successfully",
+//     product: createdProduct,
+//   })
+//       }}
+//       catch(error){
+//         res.status(500).json({
+//           success: false,
+//           message: error.message
+//         })  
+//       }
+//     }
+//     const productGetByReplication=async(req,res)=>{
+//       try{
+//         const productData=await productsService.productGetByReplication()
+//         if(!productData){
+//           res.status(500).json({
+//             success:false,
+//             message:"unable to get"
+//           })
+//         }else{
+//           res.status(200).json({
+//             success:true,
+//             message:"successful",
+//             products:productData,
+//             count : productData.length
+//           })
+//         }
+//       }catch(error){
+// throw new Error(error.message)
+//       }}
+
+
+  const createProducts = async (req, res) => {
+  try {
+    const data = req.body;
+
+    const imageData = (req.files || []).map((file) =>
+      file.path.replace(/\\/g, "/")
+    );
+
+    const product = await productsService.createProducts(
+      data,
+      imageData
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: "Product created successfully",
+      product,
+    });
+  } catch (error) {
+    console.error("Create product error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to create product",
+    });
+  }
+};
+
+const getProducts = async (req, res) => {
+  try {
+    const products = await productsService.getProducts();
+
+    return res.status(200).json({
+      success: true,
+      message: "Products fetched successfully",
+      products,
+      count: products.length,
+    });
+  } catch (error) {
+    console.error("Get products error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to fetch products",
+    });
+  }
+};
+
+
+export default { sellerIdProduct, updateProductById,createProduct,getAllProduct,getProductByCategoryId,getProductByName,filterProduct,createProducts,
+  getProducts,}

@@ -132,6 +132,69 @@ const filterProduct = async (filterData) => {
   }
 };
 
+// const createProductByReplication = async (data) => {
+//   try{
+//     const {productName,price}=data
+//     if(!productName && !price){
+//       throw new Error("All fields are required")
+//     }
+//     const createProduct=await productModel.insertOne({productName,price})
+//     if(!createProduct){
+//       throw new Error("product not created")
+//     }else{
+//       return createProduct
+//     }
+//   }
+//   catch(error){
+// throw new Error(error.message)
+//   }
+// }
+// const productGetByReplication=async()=>{
+//   try{
+// const productData=await productModel.find()
+//   if(!productData){
+//     throw new Error("data not found")
+//   }else{
+//     return productData
+//   }
+//   }catch(error){
+// throw new Error(error.message)
+//   }
+// }
+
+
+const createProducts = async (productData, images) => {
+  const {
+    productName,
+    price,
+    
+  } = productData;
+
+  if (
+    !productName ||
+    price == null 
+  ) {
+    throw new Error("Required product fields are missing");
+  }
+
+  return await productModel.create({
+    productName,
+    price
+  });
+};
+
+// READ: Secondary preferred
+const getProducts = async () => {
+  return await productModel
+    .find({})
+    .read("secondaryPreferred")
+    .exec();
+};
+
+
+
+
+
 export default {
   createProduct,
   sellerIdProduct,
@@ -140,6 +203,10 @@ export default {
   getProductByName,
   updateProductById,
   filterProduct,
+  
+  
+  createProducts,
+ getProducts 
 };
 // $regex:productName,$options:"i"
 // i means case insensitive
