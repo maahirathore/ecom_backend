@@ -210,3 +210,4 @@ export default {
 };
 // $regex:productName,$options:"i"
 // i means case insensitive
+// this is the mongodb query
